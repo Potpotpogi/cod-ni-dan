@@ -1,0 +1,2511 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>clash quiz</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:
+        radial-gradient(circle at top,#496b35,#172313 60%,#0b1009);
+    color:white;
+    min-height:100vh;
+}
+
+.topbar{
+    width:100%;
+    background:#151b12;
+    border-bottom:4px solid #8b6a32;
+    padding:12px 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,.5);
+}
+
+.game-logo{
+    font-size:22px;
+    font-weight:bold;
+    color:#ffd45a;
+    text-shadow:2px 2px #000;
+    text-transform:lowercase;
+}
+
+.resources{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.resource{
+    background:#2b351f;
+    border:2px solid #796031;
+    border-radius:10px;
+    padding:8px 12px;
+    font-weight:bold;
+}
+
+.container{
+    width:95%;
+    max-width:900px;
+    margin:30px auto;
+}
+
+.title{
+    text-align:center;
+    font-size:38px;
+    color:#ffd45a;
+    text-shadow:3px 3px #000;
+    margin-bottom:5px;
+    text-transform:lowercase;
+}
+
+.subtitle{
+    text-align:center;
+    color:#ddd;
+    margin-bottom:25px;
+    text-transform:lowercase;
+}
+
+.card{
+    background:rgba(30,40,25,.95);
+    border:3px solid #8d6d37;
+    border-radius:18px;
+    padding:25px;
+    box-shadow:0 10px 25px rgba(0,0,0,.5);
+}
+
+#quizScreen,
+#resultScreen{
+    display:none;
+}
+
+.start-icon{
+    text-align:center;
+    font-size:70px;
+    margin-bottom:10px;
+}
+
+.start-text{
+    text-align:center;
+    font-size:24px;
+    color:#ffd45a;
+    margin-bottom:20px;
+    text-transform:lowercase;
+}
+
+.name-label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+    text-transform:lowercase;
+}
+
+#playerName{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:2px solid #80632f;
+    background:#11170e;
+    color:white;
+    font-size:18px;
+    outline:none;
+    text-transform:lowercase;
+}
+
+#playerName:focus{
+    border-color:#ffd45a;
+}
+
+.start-btn,
+.submit-btn,
+.play-again{
+    width:100%;
+    margin-top:18px;
+    padding:14px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(#f2c14d,#a8751f);
+    color:#211700;
+    font-size:18px;
+    font-weight:bold;
+    cursor:pointer;
+    box-shadow:0 4px 0 #61450e;
+    text-transform:lowercase;
+}
+
+.start-btn:hover,
+.submit-btn:hover,
+.play-again:hover{
+    transform:translateY(-2px);
+}
+
+.question-info{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+.badge{
+    background:#6e5224;
+    padding:7px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:bold;
+    text-transform:lowercase;
+}
+
+.timer-text{
+    font-size:20px;
+    color:#ffd45a;
+    font-weight:bold;
+}
+
+.timer{
+    width:100%;
+    height:12px;
+    background:#171c14;
+    border-radius:20px;
+    overflow:hidden;
+    margin-bottom:20px;
+    border:1px solid #5b4929;
+}
+
+.timer-fill{
+    height:100%;
+    width:100%;
+    background:#e0a82e;
+    transition:width 1s linear;
+}
+
+.progress{
+    width:100%;
+    height:8px;
+    background:#141912;
+    border-radius:10px;
+    overflow:hidden;
+    margin-bottom:20px;
+}
+
+.progress-fill{
+    height:100%;
+    width:0%;
+    background:#7eb94d;
+    transition:.3s;
+}
+
+.question{
+    font-size:26px;
+    line-height:1.4;
+    margin-bottom:20px;
+    text-transform:lowercase;
+}
+
+.answers{
+    display:grid;
+    gap:12px;
+}
+
+.answer-btn{
+    width:100%;
+    padding:15px;
+    text-align:left;
+    background:#29341f;
+    color:white;
+    border:2px solid #6b572f;
+    border-radius:10px;
+    font-size:17px;
+    cursor:pointer;
+    transition:.2s;
+    text-transform:lowercase;
+}
+
+.answer-btn:hover{
+    background:#3a492c;
+    border-color:#d6a93d;
+}
+
+.answer-btn.correct{
+    background:#276b35;
+    border-color:#70d681;
+}
+
+.answer-btn.wrong{
+    background:#7a2929;
+    border-color:#e27777;
+}
+
+.answer-btn.disabled{
+    pointer-events:none;
+}
+
+#enumInput{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:2px solid #80632f;
+    background:#11170e;
+    color:white;
+    font-size:18px;
+    outline:none;
+    text-transform:lowercase;
+}
+
+.feedback{
+    margin-top:18px;
+    padding:12px;
+    border-radius:10px;
+    background:#222b1b;
+    display:none;
+    line-height:1.5;
+    text-transform:lowercase;
+}
+
+.secret-box{
+    display:none;
+    margin-top:25px;
+    padding:20px;
+    border:3px solid #ffca28;
+    border-radius:15px;
+    background:
+        linear-gradient(135deg,#493817,#1d2415);
+    box-shadow:0 0 25px rgba(255,200,40,.35);
+    animation:secretPop .4s ease;
+}
+
+@keyframes secretPop{
+    from{
+        transform:scale(.8);
+        opacity:0;
+    }
+
+    to{
+        transform:scale(1);
+        opacity:1;
+    }
+}
+
+.secret-title{
+    text-align:center;
+    color:#ffd45a;
+    font-size:28px;
+    margin-bottom:10px;
+    text-transform:lowercase;
+}
+
+.secret-description{
+    text-align:center;
+    margin-bottom:15px;
+    color:#ddd;
+    text-transform:lowercase;
+}
+
+.secret-question{
+    font-size:21px;
+    font-weight:bold;
+    margin-bottom:15px;
+    text-transform:lowercase;
+}
+
+.secret-answer{
+    width:100%;
+    padding:12px;
+    margin-top:8px;
+    border:2px solid #8c702e;
+    border-radius:9px;
+    background:#2b341e;
+    color:white;
+    cursor:pointer;
+    font-size:16px;
+    text-transform:lowercase;
+}
+
+.secret-answer:hover{
+    background:#4b572d;
+}
+
+.op-reward{
+    display:none;
+    margin-top:20px;
+    padding:18px;
+    border-radius:15px;
+    background:
+        linear-gradient(135deg,#6d4c16,#262d18);
+    border:3px solid #ffd45a;
+}
+
+.op-title{
+    text-align:center;
+    color:#ffd45a;
+    font-size:30px;
+    margin-bottom:15px;
+    text-shadow:2px 2px #000;
+    text-transform:lowercase;
+}
+
+.power-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.power{
+    background:#1b2316;
+    border:2px solid #75602f;
+    border-radius:10px;
+    padding:12px;
+    text-transform:lowercase;
+}
+
+.power-name{
+    color:#ffd45a;
+    font-weight:bold;
+    margin-bottom:5px;
+}
+
+.power button{
+    width:100%;
+    margin-top:8px;
+    padding:9px;
+    border:none;
+    border-radius:7px;
+    background:#bd8a26;
+    color:#1d1505;
+    font-weight:bold;
+    cursor:pointer;
+    text-transform:lowercase;
+}
+
+.power button:hover{
+    background:#e0ad43;
+}
+
+.power button:disabled{
+    background:#555;
+    color:#aaa;
+    cursor:not-allowed;
+}
+
+.op-status{
+    text-align:center;
+    margin-top:15px;
+    color:#bdf28d;
+    font-weight:bold;
+    text-transform:lowercase;
+}
+
+.result-title{
+    text-align:center;
+    color:#ffd45a;
+    font-size:38px;
+    margin-bottom:20px;
+    text-transform:lowercase;
+}
+
+.result-stat{
+    background:#20291a;
+    border:2px solid #5f512e;
+    padding:14px;
+    border-radius:10px;
+    margin:10px 0;
+    display:flex;
+    justify-content:space-between;
+    text-transform:lowercase;
+}
+
+.result-stat span:last-child{
+    color:#ffd45a;
+    font-weight:bold;
+}
+
+.damage-warning{
+    color:#ff8c8c;
+    font-weight:bold;
+}
+
+.bonus-text{
+    color:#a9ee76;
+    font-weight:bold;
+}
+
+.popup{
+    position:fixed;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%) scale(.8);
+    background:#211b0b;
+    border:4px solid #ffd45a;
+    padding:30px;
+    border-radius:18px;
+    z-index:999;
+    display:none;
+    text-align:center;
+    box-shadow:0 0 50px rgba(255,200,40,.5);
+    animation:popup .5s forwards;
+    text-transform:lowercase;
+}
+
+@keyframes popup{
+    to{
+        transform:translate(-50%,-50%) scale(1);
+    }
+}
+
+.popup h2{
+    color:#ffd45a;
+    margin-bottom:10px;
+}
+
+@media(max-width:600px){
+
+    .title{
+        font-size:30px;
+    }
+
+    .question{
+        font-size:21px;
+    }
+
+    .power-grid{
+        grid-template-columns:1fr;
+    }
+
+    .topbar{
+        justify-content:center;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="topbar">
+
+
+<div class="game-logo">
+    ⚔️ clash quiz
+</div>
+
+<div class="resources">
+
+    <div class="resource">
+        👤 <span id="topPlayer">guest</span>
+    </div>
+
+    <div class="resource">
+        ❤️ hp: <span id="hp">100</span>
+    </div>
+
+    <div class="resource">
+        🪙 score: <span id="score">0</span>
+    </div>
+
+    <div class="resource">
+        🔥 streak: <span id="streak">0</span>
+    </div>
+
+</div>
+
+
+</div>
+
+<div class="container">
+
+<!-- START SCREEN -->
+
+<div id="startScreen" class="card">
+
+
+<div class="start-icon">
+    🏰
+</div>
+
+<h1 class="title">
+    clash of clans quiz
+</h1>
+
+<p class="subtitle">
+    test your clash knowledge, chief!
+</p>
+
+<div class="start-text">
+    welcome, chief!
+</div>
+
+<label class="name-label">
+    enter your name:
+</label>
+
+<input
+    type="text"
+    id="playerName"
+    placeholder="your name..."
+    maxlength="20"
+>
+
+<button
+    class="start-btn"
+    onclick="startQuiz()">
+
+    ⚔️ start quiz
+
+</button>
+
+
+</div>
+
+<!-- QUIZ SCREEN -->
+
+<div id="quizScreen" class="card">
+
+
+<div class="question-info">
+
+    <span
+        class="badge"
+        id="questionNumber">
+
+        question 1 / 20
+
+    </span>
+
+    <span
+        class="badge"
+        id="questionType">
+
+        multiple choice
+
+    </span>
+
+    <span class="timer-text">
+
+        ⏱️ <span id="timeLeft">30</span>s
+
+    </span>
+
+</div>
+
+
+<div class="timer">
+
+    <div
+        class="timer-fill"
+        id="timerFill">
+    </div>
+
+</div>
+
+
+<div class="progress">
+
+    <div
+        class="progress-fill"
+        id="progressFill">
+    </div>
+
+</div>
+
+
+<div
+    class="question"
+    id="question">
+</div>
+
+
+<div
+    class="answers"
+    id="answers">
+</div>
+
+
+<div id="enumArea"></div>
+
+
+<div
+    class="feedback"
+    id="feedback">
+</div>
+
+
+<!-- SECRET -->
+
+<div
+    class="secret-box"
+    id="secretBox">
+
+    <div class="secret-title">
+        🔥 secret question!
+    </div>
+
+    <div class="secret-description">
+        answer correctly to unlock the op reward!
+    </div>
+
+    <div
+        class="secret-question"
+        id="secretQuestion">
+    </div>
+
+    <div id="secretAnswers"></div>
+
+</div>
+
+
+<!-- OP REWARD -->
+
+<div
+    class="op-reward"
+    id="opReward">
+
+    <div class="op-title">
+        💥 op reward unlocked!
+    </div>
+
+    <p style="text-align:center;margin-bottom:15px;">
+        you unlocked four powerful abilities!
+    </p>
+
+
+    <div class="power-grid">
+
+
+        <div class="power">
+
+            <div class="power-name">
+                ⚔️ berserker
+            </div>
+
+            <div>
+                correct answers give extra score.
+            </div>
+
+            <button
+                id="berserkerBtn"
+                onclick="useBerserker()">
+
+                activate
+
+            </button>
+
+        </div>
+
+
+        <div class="power">
+
+            <div class="power-name">
+                🛡️ immortal shield
+            </div>
+
+            <div>
+                reduce wrong-answer damage.
+            </div>
+
+            <button
+                id="shieldBtn"
+                onclick="useShield()">
+
+                activate
+
+            </button>
+
+        </div>
+
+
+        <div class="power">
+
+            <div class="power-name">
+                👁️ royal insight
+            </div>
+
+            <div>
+                remove two wrong choices.
+            </div>
+
+            <button
+                id="insightBtn"
+                onclick="useInsight()">
+
+                use hint
+
+            </button>
+
+        </div>
+
+
+        <div class="power">
+
+            <div class="power-name">
+                💰 mega loot
+            </div>
+
+            <div>
+                get extra xp from correct answers.
+            </div>
+
+            <button
+                id="lootBtn"
+                onclick="useLoot()">
+
+                activate
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div
+        class="op-status"
+        id="opStatus">
+
+        op powers ready!
+
+    </div>
+
+</div>
+
+
+</div>
+
+<!-- RESULT -->
+
+<div id="resultScreen" class="card">
+
+
+<div class="result-title">
+    🏆 quiz complete!
+</div>
+
+
+<div class="result-stat">
+
+    <span>chief</span>
+
+    <span id="resultName"></span>
+
+</div>
+
+
+<div class="result-stat">
+
+    <span>score</span>
+
+    <span id="resultScore"></span>
+
+</div>
+
+
+<div class="result-stat">
+
+    <span>correct</span>
+
+    <span id="resultCorrect"></span>
+
+</div>
+
+
+<div class="result-stat">
+
+    <span>wrong</span>
+
+    <span id="resultWrong"></span>
+
+</div>
+
+
+<div class="result-stat">
+
+    <span>best streak</span>
+
+    <span id="resultStreak"></span>
+
+</div>
+
+
+<div class="result-stat">
+
+    <span>remaining hp</span>
+
+    <span id="resultHP"></span>
+
+</div>
+
+
+<div class="result-stat">
+
+    <span>xp</span>
+
+    <span id="resultXP"></span>
+
+</div>
+
+
+<div class="result-stat">
+
+    <span>op reward</span>
+
+    <span id="resultOP"></span>
+
+</div>
+
+
+<button
+    class="play-again"
+    onclick="restartQuiz()">
+
+    🔄 play again
+
+</button>
+
+
+</div>
+
+</div>
+
+<!-- POPUP -->
+
+<div
+    class="popup"
+    id="popup">
+
+
+<h2 id="popupTitle">
+    op reward!
+</h2>
+
+<p id="popupMessage">
+    you unlocked the op reward!
+</p>
+
+
+</div>
+
+<script>
+
+
+/* =====================================================
+   question bank
+===================================================== */
+
+const questionBank = [
+
+    {
+        type:"mc",
+        question:"what is the main building of your village?",
+        options:[
+            "town hall",
+            "barracks",
+            "laboratory",
+            "army camp"
+        ],
+        answer:"town hall"
+    },
+
+    {
+        type:"mc",
+        question:"which building trains normal troops?",
+        options:[
+            "barracks",
+            "gold storage",
+            "cannon",
+            "town hall"
+        ],
+        answer:"barracks"
+    },
+
+    {
+        type:"mc",
+        question:"which resource is stored in gold storage?",
+        options:[
+            "gold",
+            "elixir",
+            "dark elixir",
+            "gems"
+        ],
+        answer:"gold"
+    },
+
+    {
+        type:"mc",
+        question:"which defense attacks enemies using arrows?",
+        options:[
+            "archer tower",
+            "cannon",
+            "mortar",
+            "wizard tower"
+        ],
+        answer:"archer tower"
+    },
+
+    {
+        type:"mc",
+        question:"which defense fires explosive shells over walls?",
+        options:[
+            "mortar",
+            "cannon",
+            "archer tower",
+            "air defense"
+        ],
+        answer:"mortar"
+    },
+
+    {
+        type:"mc",
+        question:"which troop is famous for attacking walls?",
+        options:[
+            "wall breaker",
+            "archer",
+            "giant",
+            "barbarian"
+        ],
+        answer:"wall breaker"
+    },
+
+    {
+        type:"mc",
+        question:"which troop uses a bow?",
+        options:[
+            "archer",
+            "giant",
+            "barbarian",
+            "wizard"
+        ],
+        answer:"archer"
+    },
+
+    {
+        type:"mc",
+        question:"which resource is purple?",
+        options:[
+            "elixir",
+            "gold",
+            "dark elixir",
+            "gems"
+        ],
+        answer:"elixir"
+    },
+
+    {
+        type:"mc",
+        question:"what does the laboratory do?",
+        options:[
+            "researches troop upgrades",
+            "stores gold",
+            "trains heroes",
+            "builds walls"
+        ],
+        answer:"researches troop upgrades"
+    },
+
+    {
+        type:"mc",
+        question:"which troop has very high health?",
+        options:[
+            "giant",
+            "archer",
+            "goblin",
+            "wall breaker"
+        ],
+        answer:"giant"
+    },
+
+    {
+        type:"mc",
+        question:"which defense is designed to attack air troops?",
+        options:[
+            "air defense",
+            "cannon",
+            "bomb",
+            "mortar"
+        ],
+        answer:"air defense"
+    },
+
+    {
+        type:"mc",
+        question:"which one is a hero?",
+        options:[
+            "barbarian king",
+            "barbarian",
+            "giant",
+            "goblin"
+        ],
+        answer:"barbarian king"
+    },
+
+    {
+        type:"mc",
+        question:"what does the army camp hold?",
+        options:[
+            "troops",
+            "gold",
+            "spells",
+            "walls"
+        ],
+        answer:"troops"
+    },
+
+    {
+        type:"mc",
+        question:"which hero uses a bow?",
+        options:[
+            "archer queen",
+            "barbarian king",
+            "grand warden",
+            "royal champion"
+        ],
+        answer:"archer queen"
+    },
+
+    {
+        type:"mc",
+        question:"which building is important for upgrading troops?",
+        options:[
+            "laboratory",
+            "gold mine",
+            "cannon",
+            "army camp"
+        ],
+        answer:"laboratory"
+    },
+
+    {
+        type:"enum",
+        question:"name 3 resources in clash of clans.",
+        answers:[
+            "gold",
+            "elixir",
+            "dark elixir"
+        ]
+    },
+
+    {
+        type:"enum",
+        question:"name 3 clash of clans troops.",
+        answers:[
+            "barbarian",
+            "archer",
+            "giant"
+        ]
+    },
+
+    {
+        type:"enum",
+        question:"name 3 defenses.",
+        answers:[
+            "cannon",
+            "archer tower",
+            "mortar"
+        ]
+    },
+
+    {
+        type:"enum",
+        question:"name 3 buildings.",
+        answers:[
+            "town hall",
+            "barracks",
+            "laboratory"
+        ]
+    },
+
+    {
+        type:"enum",
+        question:"name 3 heroes.",
+        answers:[
+            "barbarian king",
+            "archer queen",
+            "grand warden"
+        ]
+    }
+
+];
+
+
+/* =====================================================
+   secret questions
+===================================================== */
+
+const secretQuestions = [
+
+    {
+        question:"what is the main building in clash of clans?",
+        options:[
+            "town hall",
+            "barracks",
+            "cannon",
+            "army camp"
+        ],
+        answer:"town hall"
+    },
+
+    {
+        question:"which resource is used for some heroes and special troops?",
+        options:[
+            "dark elixir",
+            "gold",
+            "elixir",
+            "gems"
+        ],
+        answer:"dark elixir"
+    },
+
+    {
+        question:"which defense can attack both ground and air troops?",
+        options:[
+            "archer tower",
+            "cannon",
+            "mortar",
+            "bomb"
+        ],
+        answer:"archer tower"
+    }
+
+];
+
+
+/* =====================================================
+   variables
+===================================================== */
+
+let questions=[];
+
+let currentQuestion=0;
+
+let score=0;
+
+let correct=0;
+
+let wrong=0;
+
+let streak=0;
+
+let bestStreak=0;
+
+let hp=100;
+
+let xp=0;
+
+let timeLeft=30;
+
+let timer=null;
+
+let answered=false;
+
+let playerName="";
+
+let secretUsed=false;
+
+let opRewardActive=false;
+
+let berserkerActive=false;
+
+let shieldActive=false;
+
+let insightUsed=false;
+
+let lootActive=false;
+
+let secretAnswered=false;
+
+let questionStartTime=0;
+
+
+/* =====================================================
+   shuffle
+===================================================== */
+
+function shuffle(array){
+
+    let newArray=[...array];
+
+    for(
+        let i=newArray.length-1;
+        i>0;
+        i--
+    ){
+
+        let j=
+            Math.floor(
+                Math.random()*(i+1)
+            );
+
+        [
+            newArray[i],
+            newArray[j]
+        ]=[
+            newArray[j],
+            newArray[i]
+        ];
+
+    }
+
+    return newArray;
+
+}
+
+
+/* =====================================================
+   start
+===================================================== */
+
+function startQuiz(){
+
+    playerName=
+        document
+        .getElementById("playerName")
+        .value
+        .trim()
+        .toLowerCase();
+
+
+    if(playerName===""){
+
+        alert("please enter your name!");
+
+        return;
+
+    }
+
+
+    questions=shuffle(questionBank);
+
+
+    currentQuestion=0;
+
+    score=0;
+
+    correct=0;
+
+    wrong=0;
+
+    streak=0;
+
+    bestStreak=0;
+
+    hp=100;
+
+    xp=0;
+
+    secretUsed=false;
+
+    opRewardActive=false;
+
+    berserkerActive=false;
+
+    shieldActive=false;
+
+    insightUsed=false;
+
+    lootActive=false;
+
+    secretAnswered=false;
+
+
+    document.getElementById("topPlayer")
+        .textContent=playerName;
+
+
+    document.getElementById("startScreen")
+        .style.display="none";
+
+
+    document.getElementById("quizScreen")
+        .style.display="block";
+
+
+    document.getElementById("resultScreen")
+        .style.display="none";
+
+
+    document.getElementById("opReward")
+        .style.display="none";
+
+
+    resetPowerButtons();
+
+    updateStats();
+
+    loadQuestion();
+
+}
+
+
+/* =====================================================
+   reset powers
+===================================================== */
+
+function resetPowerButtons(){
+
+    document.getElementById("berserkerBtn")
+        .disabled=false;
+
+    document.getElementById("shieldBtn")
+        .disabled=false;
+
+    document.getElementById("insightBtn")
+        .disabled=false;
+
+    document.getElementById("lootBtn")
+        .disabled=false;
+
+}
+
+
+/* =====================================================
+   load question
+===================================================== */
+
+function loadQuestion(){
+
+    clearInterval(timer);
+
+    answered=false;
+
+    secretAnswered=false;
+
+
+    document.getElementById("feedback")
+        .style.display="none";
+
+
+    document.getElementById("secretBox")
+        .style.display="none";
+
+
+    let q=questions[currentQuestion];
+
+
+    document.getElementById("questionNumber")
+        .textContent=
+        "question "+
+        (currentQuestion+1)+
+        " / "+
+        questions.length;
+
+
+    document.getElementById("questionType")
+        .textContent=
+        q.type==="mc"
+        ?"multiple choice"
+        :"enumeration";
+
+
+    document.getElementById("progressFill")
+        .style.width=
+        ((currentQuestion/questions.length)*100)+"%";
+
+
+    document.getElementById("question")
+        .textContent=q.question;
+
+
+    document.getElementById("answers")
+        .innerHTML="";
+
+
+    document.getElementById("enumArea")
+        .innerHTML="";
+
+
+    if(q.type==="mc"){
+
+        createMC(q);
+
+    }else{
+
+        createEnumeration();
+
+    }
+
+
+    timeLeft=30;
+
+    questionStartTime=Date.now();
+
+    updateTimer();
+
+    startTimer();
+
+}
+
+
+/* =====================================================
+   multiple choice
+===================================================== */
+
+function createMC(q){
+
+    let answers=shuffle(q.options);
+
+
+    answers.forEach(function(option){
+
+        let button=
+            document.createElement("button");
+
+
+        button.className="answer-btn";
+
+        button.textContent=option;
+
+
+        button.onclick=function(){
+
+            checkMC(
+                option,
+                button,
+                q.answer
+            );
+
+        };
+
+
+        document
+            .getElementById("answers")
+            .appendChild(button);
+
+    });
+
+}
+
+
+/* =====================================================
+   check mc
+===================================================== */
+
+function checkMC(choice,button,answer){
+
+    if(answered){
+        return;
+    }
+
+
+    answered=true;
+
+    clearInterval(timer);
+
+
+    let buttons=
+        document.querySelectorAll(".answer-btn");
+
+
+    buttons.forEach(function(btn){
+
+        btn.classList.add("disabled");
+
+        if(btn.textContent===answer){
+
+            btn.classList.add("correct");
+
+        }
+
+    });
+
+
+    let responseTime=
+        (Date.now()-questionStartTime)/1000;
+
+
+    if(choice===answer){
+
+        button.classList.add("correct");
+
+        handleCorrect(responseTime);
+
+    }else{
+
+        button.classList.add("wrong");
+
+        handleWrong(
+            responseTime,
+            answer
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   enumeration
+===================================================== */
+
+function createEnumeration(){
+
+    let area=
+        document.getElementById("enumArea");
+
+
+    area.innerHTML=`
+
+        <input
+            type="text"
+            id="enumInput"
+            placeholder="gold, elixir, dark elixir"
+        >
+
+        <button
+            class="submit-btn"
+            onclick="checkEnumeration()">
+
+            submit answer
+
+        </button>
+
+    `;
+
+}
+
+
+/* =====================================================
+   check enumeration
+===================================================== */
+
+function checkEnumeration(){
+
+    if(answered){
+        return;
+    }
+
+
+    let input=
+        document
+        .getElementById("enumInput")
+        .value
+        .toLowerCase()
+        .split(",");
+
+
+    let answers=
+        questions[currentQuestion].answers;
+
+
+    let found=0;
+
+
+    input.forEach(function(item){
+
+        let cleaned=item.trim();
+
+
+        if(answers.includes(cleaned)){
+
+            found++;
+
+        }
+
+    });
+
+
+    answered=true;
+
+    clearInterval(timer);
+
+
+    let responseTime=
+        (Date.now()-questionStartTime)/1000;
+
+
+    if(found>=answers.length){
+
+        handleCorrect(responseTime);
+
+    }else{
+
+        handleWrong(
+            responseTime,
+            answers.join(", ")
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   correct
+===================================================== */
+
+function handleCorrect(responseTime){
+
+    correct++;
+
+    streak++;
+
+
+    if(streak>bestStreak){
+
+        bestStreak=streak;
+
+    }
+
+
+    let speedBonus=40;
+
+
+    if(responseTime<=5){
+
+        speedBonus=200;
+
+    }else if(responseTime<=10){
+
+        speedBonus=150;
+
+    }else if(responseTime<=20){
+
+        speedBonus=100;
+
+    }
+
+
+    let baseScore=100;
+
+    let totalBonus=speedBonus;
+
+
+    if(berserkerActive){
+
+        totalBonus+=150;
+
+    }
+
+
+    score+=
+        baseScore+
+        totalBonus;
+
+
+    xp+=25;
+
+
+    if(lootActive){
+
+        xp+=75;
+
+    }
+
+
+    let feedback=
+        document.getElementById("feedback");
+
+
+    feedback.style.display="block";
+
+
+    feedback.innerHTML=
+
+        "✅ correct!<br>"+
+        "speed bonus: +"+
+        speedBonus+
+        " points<br>"+
+
+        (
+            berserkerActive
+            ?
+            "<span class='bonus-text'>"+
+            "⚔️ berserker: +150 bonus!"+
+            "</span><br>"
+            :
+            ""
+        )+
+
+        (
+            lootActive
+            ?
+            "<span class='bonus-text'>"+
+            "💰 mega loot: +75 xp!"+
+            "</span>"
+            :
+            ""
+        );
+
+
+    updateStats();
+
+
+    setTimeout(function(){
+
+        checkForSecret();
+
+    },800);
+
+}
+
+
+/* =====================================================
+   WRONG ANSWER - BIG DAMAGE
+===================================================== */
+
+function handleWrong(responseTime,answer){
+
+    wrong++;
+
+    streak=0;
+
+
+    /*
+       bigger damage system
+
+       0-5 seconds     = 25 hp
+       5-10 seconds    = 20 hp
+       10-20 seconds   = 15 hp
+       20-30 seconds  = 10 hp
+    */
+
+    let damage=10;
+
+
+    if(responseTime<=5){
+
+        damage=25;
+
+    }else if(responseTime<=10){
+
+        damage=20;
+
+    }else if(responseTime<=20){
+
+        damage=15;
+
+    }
+
+
+    /*
+       immortal shield
+       reduces damage to 5
+    */
+
+    if(shieldActive){
+
+        damage=5;
+
+    }
+
+
+    hp-=damage;
+
+
+    if(hp<0){
+
+        hp=0;
+
+    }
+
+
+    let feedback=
+        document.getElementById("feedback");
+
+
+    feedback.style.display="block";
+
+
+    feedback.innerHTML=
+
+        "❌ wrong!<br>"+
+
+        "correct answer: <b>"+
+        answer+
+        "</b><br>"+
+
+        "<span class='damage-warning'>"+
+        "💥 you lost "+
+        damage+
+        " hp!"+
+        "</span><br>"+
+
+        "answer speed: "+
+        responseTime.toFixed(1)+
+        " seconds";
+
+
+    if(shieldActive){
+
+        feedback.innerHTML+=
+            "<br><span class='bonus-text'>"+
+            "🛡️ immortal shield reduced damage to 5 hp!"+
+            "</span>";
+
+    }
+
+
+    updateStats();
+
+
+    if(hp<=0){
+
+        setTimeout(function(){
+
+            showResult();
+
+        },1200);
+
+        return;
+
+    }
+
+
+    setTimeout(function(){
+
+        nextQuestion();
+
+    },1500);
+
+}
+
+
+/* =====================================================
+   secret chance
+===================================================== */
+
+function checkForSecret(){
+
+    let chance=Math.random();
+
+
+    if(
+        !secretUsed &&
+        chance<=0.30
+    ){
+
+        showSecretQuestion();
+
+    }else{
+
+        nextQuestion();
+
+    }
+
+}
+
+
+/* =====================================================
+   show secret
+===================================================== */
+
+function showSecretQuestion(){
+
+    secretUsed=true;
+
+
+    let secret=
+        secretQuestions[
+            Math.floor(
+                Math.random()*
+                secretQuestions.length
+            )
+        ];
+
+
+    document.getElementById("secretQuestion")
+        .textContent=
+        secret.question;
+
+
+    let container=
+        document.getElementById("secretAnswers");
+
+
+    container.innerHTML="";
+
+
+    shuffle(secret.options)
+    .forEach(function(option){
+
+        let button=
+            document.createElement("button");
+
+
+        button.className="secret-answer";
+
+        button.textContent=option;
+
+
+        button.onclick=function(){
+
+            checkSecret(
+                option,
+                secret.answer,
+                button
+            );
+
+        };
+
+
+        container.appendChild(button);
+
+    });
+
+
+    document.getElementById("secretBox")
+        .style.display="block";
+
+}
+
+
+/* =====================================================
+   check secret
+===================================================== */
+
+function checkSecret(choice,answer,button){
+
+    if(secretAnswered){
+        return;
+    }
+
+
+    secretAnswered=true;
+
+
+    let buttons=
+        document.querySelectorAll(
+            ".secret-answer"
+        );
+
+
+    buttons.forEach(function(btn){
+
+        btn.disabled=true;
+
+    });
+
+
+    if(choice===answer){
+
+        button.style.background="#28753a";
+
+
+        opRewardActive=true;
+
+
+        score+=500;
+
+        xp+=100;
+
+
+        document.getElementById("opReward")
+            .style.display="block";
+
+
+        showPopup(
+            "🔥 op reward unlocked!<br>+500 score<br>+100 xp"
+        );
+
+
+        updateStats();
+
+    }else{
+
+        button.style.background="#792929";
+
+
+        document.getElementById("secretQuestion")
+            .innerHTML+=
+
+            "<br><br><span style='color:#ff7777'>"+
+            "❌ wrong! correct answer: "+
+            answer+
+            "</span>";
+
+    }
+
+
+    setTimeout(function(){
+
+        document.getElementById("secretBox")
+            .style.display="none";
+
+
+        nextQuestion();
+
+    },2000);
+
+}
+
+
+/* =====================================================
+   berserker
+===================================================== */
+
+function useBerserker(){
+
+    if(
+        !opRewardActive ||
+        berserkerActive
+    ){
+
+        return;
+
+    }
+
+
+    berserkerActive=true;
+
+
+    document.getElementById("berserkerBtn")
+        .disabled=true;
+
+
+    document.getElementById("opStatus")
+        .textContent=
+        "⚔️ berserker active! +150 points on correct answers";
+
+
+    showPopup(
+        "⚔️ berserker activated!<br>+150 points per correct answer"
+    );
+
+}
+
+
+/* =====================================================
+   shield
+===================================================== */
+
+function useShield(){
+
+    if(
+        !opRewardActive ||
+        shieldActive
+    ){
+
+        return;
+
+    }
+
+
+    shieldActive=true;
+
+
+    document.getElementById("shieldBtn")
+        .disabled=true;
+
+
+    document.getElementById("opStatus")
+        .textContent=
+        "🛡️ immortal shield active! damage = 5 hp";
+
+
+    showPopup(
+        "🛡️ immortal shield activated!<br>wrong answers only deal 5 hp"
+    );
+
+}
+
+
+/* =====================================================
+   insight
+===================================================== */
+
+function useInsight(){
+
+    if(
+        !opRewardActive ||
+        insightUsed
+    ){
+
+        return;
+
+    }
+
+
+    let q=
+        questions[currentQuestion];
+
+
+    if(q.type!=="mc"){
+
+        showPopup(
+            "👁️ royal insight only works on multiple choice!"
+        );
+
+        return;
+
+    }
+
+
+    insightUsed=true;
+
+
+    document.getElementById("insightBtn")
+        .disabled=true;
+
+
+    let buttons=
+        Array.from(
+            document.querySelectorAll(
+                ".answer-btn"
+            )
+        );
+
+
+    let wrongButtons=
+        buttons.filter(function(btn){
+
+            return btn.textContent!==q.answer;
+
+        });
+
+
+    wrongButtons=
+        shuffle(wrongButtons);
+
+
+    wrongButtons
+        .slice(0,2)
+        .forEach(function(btn){
+
+            btn.style.opacity="0.35";
+
+            btn.disabled=true;
+
+            btn.textContent=
+                "❌ removed by royal insight";
+
+        });
+
+
+    document.getElementById("opStatus")
+        .textContent=
+        "👁️ royal insight used! 2 wrong choices removed.";
+
+
+    showPopup(
+        "👁️ royal insight!<br>2 wrong choices removed."
+    );
+
+}
+
+
+/* =====================================================
+   mega loot
+===================================================== */
+
+function useLoot(){
+
+    if(
+        !opRewardActive ||
+        lootActive
+    ){
+
+        return;
+
+    }
+
+
+    lootActive=true;
+
+
+    document.getElementById("lootBtn")
+        .disabled=true;
+
+
+    document.getElementById("opStatus")
+        .textContent=
+        "💰 mega loot active! +75 xp on correct answers";
+
+
+    showPopup(
+        "💰 mega loot activated!<br>+75 xp per correct answer"
+    );
+
+}
+
+
+/* =====================================================
+   timer
+===================================================== */
+
+function startTimer(){
+
+    timer=
+        setInterval(function(){
+
+            timeLeft--;
+
+            updateTimer();
+
+
+            if(timeLeft<=0){
+
+                clearInterval(timer);
+
+
+                if(!answered){
+
+                    answered=true;
+
+
+                    let q=
+                        questions[currentQuestion];
+
+
+                    if(q.type==="mc"){
+
+                        let buttons=
+                            document.querySelectorAll(
+                                ".answer-btn"
+                            );
+
+
+                        buttons.forEach(function(btn){
+
+                            btn.classList.add(
+                                "disabled"
+                            );
+
+
+                            if(
+                                btn.textContent===
+                                q.answer
+                            ){
+
+                                btn.classList.add(
+                                    "correct"
+                                );
+
+                            }
+
+                        });
+
+                    }
+
+
+                    /*
+                       timeout = 25 damage
+                    */
+
+                    handleWrong(
+                        5,
+                        q.type==="mc"
+                        ?q.answer
+                        :q.answers.join(", ")
+                    );
+
+                }
+
+            }
+
+        },1000);
+
+}
+
+
+/* =====================================================
+   timer update
+===================================================== */
+
+function updateTimer(){
+
+    document.getElementById("timeLeft")
+        .textContent=timeLeft;
+
+
+    document.getElementById("timerFill")
+        .style.width=
+        ((timeLeft/30)*100)+"%";
+
+
+    if(timeLeft<=10){
+
+        document.getElementById("timerFill")
+            .style.background="#d94b3d";
+
+    }else{
+
+        document.getElementById("timerFill")
+            .style.background="#e0a82e";
+
+    }
+
+}
+
+
+/* =====================================================
+   next
+===================================================== */
+
+function nextQuestion(){
+
+    clearInterval(timer);
+
+
+    currentQuestion++;
+
+
+    if(
+        currentQuestion>=
+        questions.length
+    ){
+
+        showResult();
+
+        return;
+
+    }
+
+
+    loadQuestion();
+
+}
+
+
+/* =====================================================
+   stats
+===================================================== */
+
+function updateStats(){
+
+    document.getElementById("hp")
+        .textContent=hp;
+
+
+    document.getElementById("score")
+        .textContent=score;
+
+
+    document.getElementById("streak")
+        .textContent=streak;
+
+}
+
+
+/* =====================================================
+   popup
+===================================================== */
+
+function showPopup(message){
+
+    let popup=
+        document.getElementById("popup");
+
+
+    document.getElementById("popupMessage")
+        .innerHTML=message;
+
+
+    popup.style.display="block";
+
+
+    setTimeout(function(){
+
+        popup.style.display="none";
+
+    },2200);
+
+}
+
+
+/* =====================================================
+   result
+===================================================== */
+
+function showResult(){
+
+    clearInterval(timer);
+
+
+    document.getElementById("quizScreen")
+        .style.display="none";
+
+
+    document.getElementById("resultScreen")
+        .style.display="block";
+
+
+    document.getElementById("resultName")
+        .textContent=playerName;
+
+
+    document.getElementById("resultScore")
+        .textContent=score;
+
+
+    document.getElementById("resultCorrect")
+        .textContent=correct;
+
+
+    document.getElementById("resultWrong")
+        .textContent=wrong;
+
+
+    document.getElementById("resultStreak")
+        .textContent=bestStreak;
+
+
+    document.getElementById("resultHP")
+        .textContent=hp;
+
+
+    document.getElementById("resultXP")
+        .textContent=xp;
+
+
+    document.getElementById("resultOP")
+        .textContent=
+        opRewardActive
+        ?"🔥 unlocked"
+        :"not unlocked";
+
+}
+
+
+/* =====================================================
+   restart
+===================================================== */
+
+function restartQuiz(){
+
+    document.getElementById("resultScreen")
+        .style.display="none";
+
+
+    document.getElementById("startScreen")
+        .style.display="block";
+
+
+    document.getElementById("playerName")
+        .value=playerName;
+
+
+    document.getElementById("topPlayer")
+        .textContent="guest";
+
+
+    document.getElementById("hp")
+        .textContent="100";
+
+
+    document.getElementById("score")
+        .textContent="0";
+
+
+    document.getElementById("streak")
+        .textContent="0";
+
+}
+
+</script>
+
+</body>
+</html>
